@@ -2,12 +2,13 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Subscription } from '../subscriptions/subscription.entity';
+import { Role } from '../roles/role.entity';
+import { Enterprise } from '../enterprises/enterprise.entity';
 
 @Entity('users')
 export class User {
@@ -23,18 +24,15 @@ export class User {
   @Column({ default: false })
   isDeleted!: boolean;
 
-  @ManyToOne(() => Subscription, (subscription) => subscription.users, {
-    eager: true,
-  })
-  @JoinColumn({ name: 'subscriptionId' })
-  subscription!: Subscription;
-
-  @Column({ type: 'timestamp', nullable: true })
-  subscriptionEndDate!: Date;
+  @OneToOne(() => Enterprise, (enterprise) => enterprise.id)
+  enterprise!: Enterprise;
 
   @CreateDateColumn()
   createdAt!: Date;
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @ManyToOne(() => Role, (role) => role.users)
+  role!: Role;
 }

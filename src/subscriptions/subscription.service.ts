@@ -28,10 +28,18 @@ export class SubscriptionService {
         price: 19.99,
         isActive: true,
       });
-      console.log('Abonnements par défaut ajoutés avec succès.');
+      console.log('Génération des abonnements par défaut.');
     } catch (error) {
       console.error("Erreur lors de l'initialisation des abonnements :", error);
     }
+  }
+
+  async getAllSubscriptions(): Promise<Subscription[]> {
+    return this.subscriptionRepository.find();
+  }
+
+  async getSubscriptionById(id: string): Promise<Subscription | null> {
+    return this.subscriptionRepository.findOne({ where: { id } });
   }
 
   async createSubscription(
@@ -41,14 +49,6 @@ export class SubscriptionService {
       createSubscriptionDto,
     );
     return this.subscriptionRepository.save(subscription);
-  }
-
-  async getAllSubscriptions(): Promise<Subscription[]> {
-    return this.subscriptionRepository.find();
-  }
-
-  async getSubscriptionById(id: string): Promise<Subscription | null> {
-    return this.subscriptionRepository.findOne({ where: { id } });
   }
 
   async updateSubscription(
