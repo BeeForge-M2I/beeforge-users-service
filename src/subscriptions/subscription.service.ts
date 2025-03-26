@@ -11,6 +11,29 @@ export class SubscriptionService {
     private subscriptionRepository: Repository<Subscription>,
   ) {}
 
+  async initializeSubscription() {
+    try {
+      await this.createSubscription({
+        name: 'FREE',
+        price: 0.0,
+        isActive: true,
+      });
+      await this.createSubscription({
+        name: 'BASIC',
+        price: 9.99,
+        isActive: true,
+      });
+      await this.createSubscription({
+        name: 'PRO',
+        price: 19.99,
+        isActive: true,
+      });
+      console.log('Abonnements par défaut ajoutés avec succès.');
+    } catch (error) {
+      console.error("Erreur lors de l'initialisation des abonnements :", error);
+    }
+  }
+
   async createSubscription(
     createSubscriptionDto: CreateSubscriptionDto,
   ): Promise<Subscription> {
