@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../users/user.entity';
-import { Subscription } from '../subscriptions/subscription.entity';
+import { Subscription } from '../subscriptions/entities/subscription.entity';
 import { Address } from '../addresses/address.entity';
 
 @Entity('enterprise')

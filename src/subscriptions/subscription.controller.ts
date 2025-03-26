@@ -8,7 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { SubscriptionService } from './subscription.service';
-import { CreateSubscriptionDto } from './dto/create-subscription.dto';
+import { CreateSubscriptionDto } from './dto/subscription.dto';
 
 @Controller('subscriptions')
 export class SubscriptionController {
@@ -16,7 +16,7 @@ export class SubscriptionController {
 
   @Post()
   async create(@Body() createSubscriptionDto: CreateSubscriptionDto) {
-    return this.subscriptionService.createSubscription(createSubscriptionDto);
+    return this.subscriptionService.create(createSubscriptionDto);
   }
 
   @Get()

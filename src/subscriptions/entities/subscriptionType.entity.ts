@@ -1,8 +1,8 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Enterprise } from '../enterprises/enterprise.entity';
+import { Subscription } from './subscription.entity';
 
-@Entity('subscriptions')
-export class Subscription {
+@Entity('subscription_types')
+export class SubscriptionType {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
@@ -15,6 +15,6 @@ export class Subscription {
   @Column({ default: true })
   isActive!: boolean;
 
-  @OneToMany(() => Enterprise, (enterprise) => enterprise.subscription)
-  enterprise!: Enterprise[];
+  @OneToMany(() => Subscription, (subscription) => subscription.type)
+  subscriptions!: Subscription[];
 }

@@ -1,10 +1,4 @@
-import {
-  IsBoolean,
-  IsDateString,
-  IsEmail,
-  IsOptional,
-  IsUUID,
-} from 'class-validator';
+import { IsBoolean, IsEmail } from 'class-validator';
 
 export class CreateUserDto {
   @IsEmail()
@@ -15,11 +9,4 @@ export class CreateUserDto {
 
   @IsBoolean()
   isDeleted?: boolean;
-
-  @IsUUID()
-  subscriptionId?: string;
-
-  @IsOptional()
-  @IsDateString()
-  subscriptionEndDate?: string;
 }

@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Enterprise } from './enterprise.entity';
 import { Address } from '../addresses/address.entity';
 import { CreateEnterpriseDto } from './dto/create-enterprise.dto';
-import { Subscription } from '../subscriptions/subscription.entity';
+import { Subscription } from '../subscriptions/entities/subscription.entity';
 import { User } from '../users/user.entity';
 
 @Injectable()
