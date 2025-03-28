@@ -7,16 +7,13 @@ import {
   Patch,
   Post,
   Req,
-  UseGuards,
 } from '@nestjs/common';
 import { EnterpriseService } from './enterprise.service';
 import { Enterprise } from './entities/enterprise.entity';
 import { CreateEnterpriseDto } from './dto/create-enterprise.dto';
 import { UpdateEnterpriseDto } from './dto/update-enterprise.dto';
-import { KeycloakAuthGuard } from './guards/keycloak-auth.guard';
 
 @Controller('enterprises')
-@UseGuards(KeycloakAuthGuard)
 export class EnterpriseController {
   constructor(private readonly enterpriseService: EnterpriseService) {}
 
@@ -35,7 +32,7 @@ export class EnterpriseController {
     @Req() req: any,
     @Body() createEnterpriseDto: CreateEnterpriseDto,
   ) {
-    const keycloakUserId = req.user.sub;
+    const keycloakUserId = req.body.userId;
     if (!keycloakUserId) {
       throw new Error('User ID missing from request');
     }

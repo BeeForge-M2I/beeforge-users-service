@@ -10,6 +10,7 @@ export class UpdateEnterpriseDto {
   @IsString()
   email?: string;
 
+  @IsOptional()
   @IsString()
   @Length(14, 14)
   siret?: string;

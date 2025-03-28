@@ -29,7 +29,7 @@ export class Enterprise {
   @Column()
   legalStatus!: string;
 
-  @OneToMany(() => Address, (address) => address.enterprise, { eager: true })
+  @OneToMany(() => Address, (address) => address.enterprise, { cascade: true })
   @JoinColumn()
   addresses!: Address[];
 

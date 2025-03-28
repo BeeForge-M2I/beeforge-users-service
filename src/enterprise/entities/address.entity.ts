@@ -18,6 +18,8 @@ export class Address {
   @Column()
   country!: string;
 
-  @ManyToOne(() => Enterprise, (enterprise) => enterprise.addresses)
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.addresses, {
+    onDelete: 'CASCADE',
+  })
   enterprise!: Enterprise;
 }

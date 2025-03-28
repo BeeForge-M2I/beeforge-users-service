@@ -38,31 +38,39 @@ export class EnterpriseService {
     userId: string,
     createEnterpriseDto: CreateEnterpriseDto,
   ): Promise<Enterprise> {
+    const { addresses, ...enterpriseData } = createEnterpriseDto;
+
     const newEnterprise = this.enterpriseRepository.create({
-      ...createEnterpriseDto,
+      ...enterpriseData,
       userId,
     });
 
-    if (
-      createEnterpriseDto.addresses &&
-      createEnterpriseDto.addresses.length > 0
-    ) {
-      newEnterprise.addresses = createEnterpriseDto.addresses.map((addr) => {
-        return this.addressRepository.create(addr);
-      });
-    }
+    const savedEnterprise = await this.enterpriseRepository.save(newEnterprise);
 
-    return await this.enterpriseRepository.save(newEnterprise);
+    const addressEntities = addresses.map((address) => {
+      return this.addressRepository.create({
+        ...address,
+        enterprise: savedEnterprise,
+      });
+    });
+
+    await this.addressRepository.save(addressEntities);
+
+    return savedEnterprise;
   }
 
   async update(id: string, dto: UpdateEnterpriseDto): Promise<Enterprise> {
     const enterprise = await this.findOne(id);
 
     if (dto.addresses) {
-      await this.addressRepository.remove(enterprise.addresses);
-      enterprise.addresses = dto.addresses.map((addr) => {
-        return this.addressRepository.create(addr);
+      await this.addressRepository.delete({ enterprise: { id } });
+
+      const newAddresses = dto.addresses.map((addr) => {
+        return this.addressRepository.create({ ...addr, enterprise });
       });
+
+      await this.addressRepository.save(newAddresses);
+      enterprise.addresses = newAddresses;
     }
 
     Object.assign(enterprise, dto);
