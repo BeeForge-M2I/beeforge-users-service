@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Enterprise } from './entities/enterprise.entity';
@@ -8,6 +8,8 @@ import { UpdateEnterpriseDto } from './dto/update-enterprise.dto';
 
 @Injectable()
 export class EnterpriseService {
+  private readonly logger = new Logger(EnterpriseService.name);
+
   constructor(
     @InjectRepository(Enterprise)
     private readonly enterpriseRepository: Repository<Enterprise>,
@@ -15,26 +17,14 @@ export class EnterpriseService {
     private readonly addressRepository: Repository<Address>,
   ) {}
 
-  async create(dto: CreateEnterpriseDto): Promise<Enterprise> {
-    const address = this.addressRepository.create(dto.address);
-    await this.addressRepository.save(address);
-
-    const enterprise = this.enterpriseRepository.create({
-      ...dto,
-      address,
-    });
-
-    return this.enterpriseRepository.save(enterprise);
-  }
-
   async findAll(): Promise<Enterprise[]> {
-    return this.enterpriseRepository.find({ relations: ['address'] });
+    return this.enterpriseRepository.find({ relations: ['addresses'] });
   }
 
   async findOne(id: string): Promise<Enterprise> {
     const enterprise = await this.enterpriseRepository.findOne({
       where: { id },
-      relations: ['address'],
+      relations: ['addresses'],
     });
 
     if (!enterprise) {
@@ -44,11 +34,35 @@ export class EnterpriseService {
     return enterprise;
   }
 
+  async create(
+    userId: string,
+    createEnterpriseDto: CreateEnterpriseDto,
+  ): Promise<Enterprise> {
+    const newEnterprise = this.enterpriseRepository.create({
+      ...createEnterpriseDto,
+      userId,
+    });
+
+    if (
+      createEnterpriseDto.addresses &&
+      createEnterpriseDto.addresses.length > 0
+    ) {
+      newEnterprise.addresses = createEnterpriseDto.addresses.map((addr) => {
+        return this.addressRepository.create(addr);
+      });
+    }
+
+    return await this.enterpriseRepository.save(newEnterprise);
+  }
+
   async update(id: string, dto: UpdateEnterpriseDto): Promise<Enterprise> {
     const enterprise = await this.findOne(id);
 
-    if (dto.address) {
-      await this.addressRepository.update(enterprise.address.id, dto.address);
+    if (dto.addresses) {
+      await this.addressRepository.remove(enterprise.addresses);
+      enterprise.addresses = dto.addresses.map((addr) => {
+        return this.addressRepository.create(addr);
+      });
     }
 
     Object.assign(enterprise, dto);

@@ -1,25 +1,28 @@
-import { IsOptional, IsString, IsUUID } from 'class-validator';
-import { Address } from '../entities/address.entity';
+import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { AddressDto } from './adress.dto';
 
 export class CreateEnterpriseDto {
+  @IsNotEmpty()
   @IsString()
   name!: string;
 
+  @IsNotEmpty()
   @IsString()
   siret!: string;
 
+  @IsNotEmpty()
   @IsString()
   email!: string;
 
+  @IsNotEmpty()
   @IsString()
   phone!: string;
 
+  @IsNotEmpty()
   @IsString()
   legalStatus!: string;
 
-  address!: Address;
-
-  @IsOptional()
-  @IsUUID()
-  subscriptionId?: string;
+  @IsArray()
+  @IsNotEmpty()
+  addresses!: AddressDto[];
 }

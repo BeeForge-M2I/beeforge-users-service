@@ -1,5 +1,5 @@
-import { IsOptional, IsString, IsUUID } from 'class-validator';
-import { Address } from '../entities/address.entity';
+import { IsOptional, IsString, Length } from 'class-validator';
+import { AddressDto } from './adress.dto';
 
 export class UpdateEnterpriseDto {
   @IsOptional()
@@ -10,6 +10,10 @@ export class UpdateEnterpriseDto {
   @IsString()
   email?: string;
 
+  @IsString()
+  @Length(14, 14)
+  siret?: string;
+
   @IsOptional()
   @IsString()
   phone?: string;
@@ -19,9 +23,5 @@ export class UpdateEnterpriseDto {
   legalStatus?: string;
 
   @IsOptional()
-  address?: Address;
-
-  @IsOptional()
-  @IsUUID()
-  subscriptionId?: string;
+  addresses?: AddressDto[];
 }

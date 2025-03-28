@@ -6,20 +6,19 @@ import {
   Param,
   Patch,
   Post,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { EnterpriseService } from './enterprise.service';
 import { Enterprise } from './entities/enterprise.entity';
 import { CreateEnterpriseDto } from './dto/create-enterprise.dto';
 import { UpdateEnterpriseDto } from './dto/update-enterprise.dto';
+import { KeycloakAuthGuard } from './guards/keycloak-auth.guard';
 
 @Controller('enterprises')
+@UseGuards(KeycloakAuthGuard)
 export class EnterpriseController {
   constructor(private readonly enterpriseService: EnterpriseService) {}
-
-  @Post()
-  create(@Body() dto: CreateEnterpriseDto): Promise<Enterprise> {
-    return this.enterpriseService.create(dto);
-  }
 
   @Get()
   findAll(): Promise<Enterprise[]> {
@@ -29,6 +28,22 @@ export class EnterpriseController {
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Enterprise> {
     return this.enterpriseService.findOne(id);
+  }
+
+  @Post()
+  async createEnterprise(
+    @Req() req: any,
+    @Body() createEnterpriseDto: CreateEnterpriseDto,
+  ) {
+    const keycloakUserId = req.user.sub;
+    if (!keycloakUserId) {
+      throw new Error('User ID missing from request');
+    }
+
+    return await this.enterpriseService.create(
+      keycloakUserId,
+      createEnterpriseDto,
+    );
   }
 
   @Patch(':id')

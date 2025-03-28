@@ -2,12 +2,14 @@ import {
   Column,
   Entity,
   JoinColumn,
-  OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { Address } from './address.entity';
 
 @Entity('enterprises')
+@Unique(['userId'])
 export class Enterprise {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -27,10 +29,10 @@ export class Enterprise {
   @Column()
   legalStatus!: string;
 
-  @OneToOne(() => Address)
+  @OneToMany(() => Address, (address) => address.enterprise, { eager: true })
   @JoinColumn()
-  address!: Address;
+  addresses!: Address[];
 
-  @Column({ nullable: true })
-  subscriptionId?: string;
+  @Column({ unique: true })
+  userId!: string;
 }
