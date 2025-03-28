@@ -18,6 +18,6 @@ export class Address {
   @Column()
   country!: string;
 
-  @ManyToOne(() => Enterprise, (enterprise) => enterprise.address)
+  @ManyToOne(() => Enterprise, (enterprise) => enterprise.addresses)
   enterprise!: Enterprise;
 }
